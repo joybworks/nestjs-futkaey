@@ -1,0 +1,107 @@
+{
+  "name": "@joyb-works/nestjs-futkaey",
+  "version": "0.0.0",
+  "description": "NestJS => TypeORM DDD patterns with configurable tenancy support",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./cqrs": {
+      "types": "./dist/cqrs.d.ts",
+      "default": "./dist/cqrs.js"
+    },
+    "./blueprint": {
+      "types": "./dist/blueprint.d.ts",
+      "default": "./dist/blueprint.js"
+    },
+    "./context": {
+      "types": "./dist/context/index.d.ts",
+      "default": "./dist/context/index.js"
+    },
+    "./operators": {
+      "types": "./dist/operators/index.d.ts",
+      "default": "./dist/operators/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "test": "echo \"No tests yet\" && exit 0",
+    "release": "standard-version",
+    "release:first": "standard-version --first-release",
+    "prepare": "husky",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "nestjs",
+    "typeorm",
+    "ddd",
+    "domain-driven-design",
+    "cqrs",
+    "multi-tenant",
+    "repository",
+    "aggregate-root",
+    "mongodb"
+  ],
+  "author": "joyb-works",
+  "license": "MIT",
+  "peerDependencies": {
+    "@nestjs/common": "^10.0.0 || ^11.0.0",
+    "@nestjs/core": "^10.0.0 || ^11.0.0",
+    "@nestjs/cqrs": "^10.0.0 || ^11.0.0",
+    "@nestjs/typeorm": "^10.0.0 || ^11.0.0",
+    "nestjs-cls": "^4.0.0 || ^5.0.0",
+    "reflect-metadata": "^0.1.13 || ^0.2.0",
+    "typeorm": "^0.3.0"
+  },
+  "peerDependenciesMeta": {
+    "@nestjs/cqrs": {
+      "optional": true
+    },
+    "nestjs-cls": {
+      "optional": true
+    },
+    "@nestjs/typeorm": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@eslint/js": "^9.0.0",
+    "@nestjs/common": "^11.0.13",
+    "@nestjs/core": "^11.0.13",
+    "@nestjs/cqrs": "^11.0.3",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.2.2",
+    "eslint": "^9.0.0",
+    "husky": "^9.1.7",
+    "mongodb": "^6.15.0",
+    "nestjs-cls": "^5.4.2",
+    "reflect-metadata": "^0.2.0",
+    "rxjs": "^7.8.0",
+    "standard-version": "^9.5.0",
+    "typeorm": "^0.3.22",
+    "typescript": "~5.7.0",
+    "typescript-eslint": "^8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joybworks/nestjs-futkaey.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ]
+}

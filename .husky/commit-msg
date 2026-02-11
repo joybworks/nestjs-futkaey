@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+set -e
+
+MSG_FILE="${1:-.git/COMMIT_EDITMSG}"
+[ "$MSG_FILE" = "-" ] && MSG_FILE=".git/COMMIT_EDITMSG"
+
+out="$(npx --no -- commitlint --color false --edit "$MSG_FILE" 2>&1)" || {
+  # Find the first actual error line from commitlint
+  first="$(printf '%s\n' "$out" | grep -m1 '^✖' || printf '%s\n' "$out" | head -n1)"
+
+  # Build helpful hints for the VS Code popup
+  type_hint=""
+  subject_hint=""
+  echo "$out" | grep -q '\[type-empty\]'    && type_hint=" use a type from [feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert]"
+  echo "$out" | grep -q '\[subject-empty\]' && subject_hint=", and format: \"<type><(module_optional)>:<space><commit message(lower case sentence)>\""
+
+  # 👇 This ONE line is what the popup shows
+  printf >&2 "❌ Commitlint failed: %s%s%s\n" "$first" "$type_hint" "$subject_hint"
+
+  # Full details go to Output → Git / terminal
+  printf >&2 "\nYour commit message was:\n\n"
+  sed -n '1,120p' "$MSG_FILE" >&2
+  printf '%s\n' "$out" >&2
+  exit 1
+}

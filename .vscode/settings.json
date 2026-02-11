@@ -1,0 +1,105 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.stickyScroll.enabled": true,
+  "editor.renderWhitespace": "none",
+  "editor.renderControlCharacters": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.fontLigatures": true,
+  "editor.detectIndentation": false,
+  "explorer.compactFolders": false,
+  "typescript.preferences.importModuleSpecifier": "project-relative",
+  "typescript.preferences.quoteStyle": "single",
+  "javascript.preferences.quoteStyle": "single",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "html.format.wrapAttributes": "force",
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
+  },
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll.eslint": "explicit"
+    }
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll.eslint": "explicit"
+    }
+  },
+  "explorerExclude.backup": {},
+  "diffEditor.ignoreTrimWhitespace": false,
+  "explorer.confirmDelete": false,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "angular.enable-strict-mode-prompt": false,
+  "eslint.useESLintClass": true,
+  "eslint.useFlatConfig": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/.history": true,
+    ".history": true,
+    ".local": true,
+    "**/CVS": true,
+    "node_modules": true,
+    ".github": true,
+    ".versionrc.json": true,
+    ".npmrc": true,
+    "dist": true,
+    ".editorconfig": true,
+    ".vscode": true,
+    "**/tsconfig*.json": true,
+    "**/eslint.config.cjs": true,
+    "**/.prettierignore": true,
+    "**/.prettierrc": true,
+    "**/.nvmrc": true,
+    "**/project.json": true,
+    "**/.gitignore": true,
+    "**/.gitkeep": true,
+    "tmp": true,
+    "**/test-setup.ts": true,
+    "**/jest.config.ts": true,
+    "jest.preset.js": true,
+    "tailwind.json": true,
+    ".cursor": true,
+    "**/eslint.config.mjs": true,
+    "cspell.json": true,
+    ".husky": true,
+    "commitlint.config.js": true,
+    ".npmignore": true
+  },
+  "search.exclude": {
+    "**/.history": true,
+    "**/node_modules": true,
+    "**/.nx": true,
+    "**/.angular": true,
+    "**/.git": true,
+    "**/.github": true,
+    "**/dist": true,
+    "**/plugins": true,
+    "**/tmp": true,
+    "**/.local": true,
+    "**/.cursor": true
+  },
+  "material-icon-theme.activeIconPack": "angular_ngrx",
+}
