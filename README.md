@@ -1,7 +1,7 @@
 # NestJS Futkaey
 
-> **Pronunciation:** **FOO-t-keh** (Φούτ και — from Greek "Fut and").  
-> *Fut* (φούτ) = "FOO-t" (the **t** is pronounced, not silent), *kai* (και) = "keh".
+> **Say it right:** **FOO-t-keh** (Φούτ και — from Greek "Fut and").  
+> *Fut* (φούτ) = "FOO-t" — the **t** is pronounced, not silent. *Kai* (και) = "keh".
 
 NestJS Futkaey is a library that brings **Domain-Driven Design (DDD)** patterns to NestJS applications backed by TypeORM. It provides configurable multi-tenancy, aggregate roots, repository abstractions, and dynamic entities—**dramatically reducing the infrastructure layer** so you can focus on domain logic.
 
