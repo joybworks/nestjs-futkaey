@@ -30,7 +30,7 @@ Futkaey provides all of this out of the box. Your **infrastructure layer becomes
 - **Dynamic tenant fields** — Use `tenantId`, `companyId`, `customerId`, or any field name you choose
 - **Aggregate roots** — `BasicAggregateRoot` and `TenantAggregateRoot` with `@AggregateProp`, domain events, and context
 - **Repository mixin** — `RepositoryMixin(Entity, Model)` for automatic tenant filtering and entity↔domain mapping
-- **Dynamic entities** — Per-aggregate collections (e.g. `project_123_supply_data`) with `@DynamicEntity` and `DynamicRepository`
+- **Dynamic entities** — Per-aggregate collections (e.g. `card_xyz_transactions`) with `@DynamicEntity` and `DynamicRepository`
 - **CQRS-ready** — Integrates with `@nestjs/cqrs`
 - **Audit trail** — `createdBy`, `updatedBy`, `deletedBy`, soft delete
 - **MongoDB & SQL** — Works with TypeORM drivers (MongoDB, PostgreSQL, MySQL, etc.)
@@ -289,21 +289,31 @@ Your infrastructure becomes: declare the entity, declare the model, mix in the r
 
 ## Dynamic entities
 
-For per-aggregate collections (e.g. `project_123_supply_data`):
+For per-aggregate collections (e.g. one **cards** collection and a dynamic **transactions** collection per card):
 
 ```typescript
+@Entity('cards')
+@TenantAware()
+export class CardEntity extends AuditableEntity {
+  @ObjectIdColumn() id: ObjectId;
+  @Column() companyId: ObjectId;
+  @Column() lastFour: string;
+  // ...
+}
+
 @DynamicEntity({
-  collectionNameGenerator: (projectId) => `project_${projectId}_supply`,
-  idField: 'projectId',
+  collectionNameGenerator: (creditcardId) => `card_${creditcardId}_transactions`,
+  idField: 'creditcardId',
 })
-export class ProjectSupplyEntity extends AuditableEntity {
-  @Column() projectId: ObjectId;
-  @Column() name: string;
+export class TransactionEntity extends AuditableEntity {
+  @Column() creditcardId: ObjectId;
+  @Column() amount: number;
+  @Column() merchant: string;
   // ...
 }
 ```
 
-Use `DynamicRepository` with the entity class and aggregate ID to read/write. The collection name is computed at runtime.
+Use `DynamicRepository` with the entity class and aggregate ID (e.g. `creditcardId`) to read/write. The collection name is computed at runtime (e.g. `card_<id>_transactions`).
 
 ---
 
@@ -314,7 +324,7 @@ See the [`samples/`](./samples/) directory for full NestJS examples:
 - **samples/01-basic** — Regular mode, single tenant
 - **samples/02-multi-tenant** — Multi-tenant with `companyId`
 - **samples/03-custom-hierarchy** — `tenantId` → `companyId` → `customerId`
-- **samples/04-dynamic-entities** — Per-aggregate collections
+- **samples/04-dynamic-entities** — Cards collection + per-card transactions (dynamic collections)
 
 ---
 

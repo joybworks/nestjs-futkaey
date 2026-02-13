@@ -27,15 +27,18 @@ No `nestjs-cls` required. No tenant headers.
 ## Structure
 
 ```
+├── package.json
+├── nest-cli.json
+├── tsconfig.json
 ├── src/
-│   ├── app.module.ts
+│   ├── app.module.ts      # Futkaey forRoot(regular), TypeORM SQLite
 │   ├── main.ts
-│   ├── lookup/
-│   │   ├── lookup.entity.ts
-│   │   ├── lookup.model.ts
-│   │   ├── lookup.repository.ts
-│   │   └── lookup.controller.ts
-│   └── ...
+│   └── lookup/
+│       ├── lookup.module.ts
+│       ├── lookup.entity.ts    # AuditableEntity, no @TenantAware
+│       ├── lookup.model.ts      # BasicAggregateRoot, create(payload)
+│       ├── lookup.repository.ts # RepositoryMixin(LookupEntity, LookupModel)
+│       └── lookup.controller.ts # POST /lookup, GET /lookup
 ```
 
 ## Run
@@ -48,8 +51,12 @@ npm run start:dev
 Try:
 
 ```bash
+# Create a lookup (no tenant header)
 curl -X POST http://localhost:3000/lookup \
   -H "Content-Type: application/json" \
   -H "x-user-id: user-1" \
   -d '{"name":"Status","code":"active"}'
+
+# List all lookups
+curl http://localhost:3000/lookup
 ```

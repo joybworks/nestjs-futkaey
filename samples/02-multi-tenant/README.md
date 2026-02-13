@@ -33,14 +33,18 @@ Requires `nestjs-cls` for context storage.
 ## Structure
 
 ```
+├── package.json
+├── nest-cli.json
+├── tsconfig.json
 ├── src/
-│   ├── app.module.ts
-│   ├── order/
-│   │   ├── order.entity.ts    # @TenantAware, companyId column
-│   │   ├── order.model.ts     # extends TenantAggregateRoot
-│   │   ├── order.repository.ts
-│   │   └── order.controller.ts
-│   └── ...
+│   ├── app.module.ts      # Futkaey forRoot(multi-tenant, companyId), TypeORM SQLite
+│   ├── main.ts
+│   └── order/
+│       ├── order.module.ts
+│       ├── order.entity.ts    # @TenantAware(), companyId column
+│       ├── order.model.ts     # TenantAggregateRoot, create({ total })
+│       ├── order.repository.ts # RepositoryMixin(OrderEntity, OrderModel)
+│       └── order.controller.ts  # POST /orders, GET /orders
 ```
 
 ## Run

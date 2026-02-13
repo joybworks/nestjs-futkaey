@@ -12,8 +12,8 @@ import { MetadataKeys } from '../config/nestjs-futkaey.constants';
  * @example
  * ```typescript
  * @TenantAware()
- * @Entity('projects')
- * export class ProjectEntity extends AuditableEntity {
+ * @Entity('cards')
+ * export class CardEntity extends AuditableEntity {
  *   @ObjectIdColumn({ name: '_id' }) id: ObjectId;
  *   @Column() companyId: ObjectId;  // matches config tenant.fieldName
  * }

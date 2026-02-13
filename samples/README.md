@@ -11,11 +11,16 @@ This directory contains sample NestJS applications demonstrating Futkaey usage.
 
 ## Running a sample
 
+Each sample is a standalone NestJS app. Install and run:
+
 ```bash
-cd samples/01-basic
+cd samples/01-basic   # or 02-multi-tenant, 03-custom-hierarchy, 04-dynamic-entities
 npm install
 npm run start:dev
 ```
+
+- **01-basic**, **02-multi-tenant**, **03-custom-hierarchy** use SQLite (in-memory); no extra setup.
+- **04-dynamic-entities** uses MongoDB; ensure MongoDB is running locally or set `MONGO_URI`.
 
 ## Shared concepts
 
