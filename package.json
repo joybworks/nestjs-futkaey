@@ -1,6 +1,6 @@
 {
   "name": "@joyb-works/nestjs-futkaey",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "NestJS => TypeORM DDD patterns with configurable tenancy support",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
