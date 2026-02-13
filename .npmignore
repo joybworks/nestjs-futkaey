@@ -1,9 +1,34 @@
+# Source and build config (consumers only need dist/)
 src/
 tsconfig.json
 tsconfig.build.json
+tsconfig*.json
+
+# Lint, test, tooling
 .eslintrc*
 jest.config*
 **/*.spec.ts
 **/*.test.ts
+
+# Dependencies and dev-only
 node_modules/
+samples/
+
+# Version control and editor
 .git/
+.github/
+.vscode/
+.cursor/
+.history/
+
+# Hooks and local config (not needed in package)
+.husky/
+.editorconfig
+.prettierrc*
+*.log
+.env*
+.env.*
+
+# Optional: uncomment to shrink dist further (loses source maps in the package)
+# dist/**/*.js.map
+# dist/**/*.d.ts.map
