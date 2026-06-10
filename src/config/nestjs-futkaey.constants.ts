@@ -10,8 +10,6 @@ export const MetadataKeys = {
   DynamicEntityMeta: '__nestjs_futkaey_dynamic_entity__',
 } as const;
 
-export const SYSTEM_USER_ID_DEFAULT = '000000000000000000000000';
-
 export const DEFAULT_AUDIT_CONFIG = {
   userIdHeader: 'x-user-id',
   correlationIdHeader: 'x-correlation-id',

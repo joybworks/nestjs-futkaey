@@ -6,6 +6,7 @@ import { OrderModule } from './order/order.module';
 @Module({
   imports: [
     NestjsFutkaeyModule.forRoot({
+      databaseType: 'sqlite',
       tenancy: {
         mode: 'multi-tenant',
         tenant: {

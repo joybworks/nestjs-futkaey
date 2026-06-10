@@ -62,6 +62,16 @@ export interface AuditConfig {
 export interface NestjsFutkaeyModuleOptions {
   tenancy: TenancyConfig;
   audit?: AuditConfig;
+  /**
+   * System user ID for audit/tenant fallbacks (must match your `id` column format).
+   * When omitted, derived from `databaseType`.
+   */
+  systemUserId?: string;
+  /**
+   * TypeORM driver type (e.g. `mongodb`, `postgres`, `sqlite`).
+   * Picks the default `systemUserId` for that driver's `id` column when not set explicitly.
+   */
+  databaseType?: string;
 }
 
 export interface NestjsFutkaeyAsyncOptions {

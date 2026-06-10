@@ -2,7 +2,7 @@
 import { FindOperator } from 'typeorm';
 
 /**
- * Custom Regex operator for MongoDB regex queries.
+ * Regex find operator. On document drivers it is translated to a `$regex` query.
  */
 export function Regex<T>(value: RegExp | string): FindOperator<T> {
   return new FindOperator('equal' as any, value as any, false, false);

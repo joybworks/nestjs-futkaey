@@ -1,6 +1,6 @@
 // Config
 export { getAuditConfig, getContextFields, getContextValue, getHierarchyLevels, getModuleOptions, getSystemUserId, getTenancyConfig, isRegularMode, setModuleOptions } from './config/nestjs-futkaey.accessor';
-export { MetadataKeys, NESTJS_FUTkaey_CONTEXT_PROVIDER, NESTJS_FUTkaey_OPTIONS, SYSTEM_USER_ID_DEFAULT } from './config/nestjs-futkaey.constants';
+export { MetadataKeys, NESTJS_FUTkaey_CONTEXT_PROVIDER, NESTJS_FUTkaey_OPTIONS } from './config/nestjs-futkaey.constants';
 export {
   AuditConfig,
   ContextFieldConfig, CustomHierarchyModeConfig,
@@ -31,7 +31,7 @@ export { AggregateContext, AggregatePropertyOptions, DomainAccess, DomainEventCo
 // Repository
 export { AppRepository } from './repository/app.repository';
 export { contextualize, contextualizeArray } from './repository/contextualize.util';
-export { escapeLikeToRegex, isDatabaseId, isMongoDriver, newDatabaseId, newId, toDate, toDateForDatabase } from './repository/db.util';
+export { escapeLikeToRegex, getDefaultSystemUserId, isDatabaseId, isMongoDriver, newDatabaseId, newId, toDate, toDateForDatabase } from './repository/db.util';
 export type { DatabaseId } from './repository/db.util';
 export { DomainEntityInterface, MarshallerMixin } from './repository/marshaller.mixin';
 export { RepositoryMixin } from './repository/repository.mixin';

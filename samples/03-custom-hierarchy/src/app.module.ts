@@ -6,6 +6,7 @@ import { InvoiceModule } from './invoice/invoice.module';
 @Module({
   imports: [
     NestjsFutkaeyModule.forRoot({
+      databaseType: 'sqlite',
       tenancy: {
         mode: 'custom-hierarchy',
         hierarchy: [

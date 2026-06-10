@@ -1,4 +1,5 @@
-import { DEFAULT_AUDIT_CONFIG, SYSTEM_USER_ID_DEFAULT } from './nestjs-futkaey.constants';
+import { getDefaultSystemUserId } from '../repository/db.util';
+import { DEFAULT_AUDIT_CONFIG } from './nestjs-futkaey.constants';
 import { AuditConfig, ContextFieldConfig, HierarchyLevel, NestjsFutkaeyModuleOptions, TenancyConfig } from './nestjs-futkaey.interfaces';
 
 function getContextProviderSafe(): unknown {
@@ -44,11 +45,17 @@ export function getContextFields(): ContextFieldConfig[] {
 }
 
 export function getSystemUserId(): string {
+  const options = getModuleOptions();
+  if (options.systemUserId) {
+    return options.systemUserId;
+  }
   const config = getTenancyConfig();
   if (config.mode === 'multi-tenant' || config.mode === 'custom-hierarchy') {
-    return config.systemUserId ?? SYSTEM_USER_ID_DEFAULT;
+    if (config.systemUserId) {
+      return config.systemUserId;
+    }
   }
-  return SYSTEM_USER_ID_DEFAULT;
+  return getDefaultSystemUserId(options.databaseType);
 }
 
 export function getHierarchyLevels(): HierarchyLevel[] {

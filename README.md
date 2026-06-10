@@ -33,7 +33,7 @@ Futkaey provides all of this out of the box. Your **infrastructure layer becomes
 - **Dynamic entities** — Per-aggregate collections (e.g. `card_xyz_transactions`) with `@DynamicEntity` and `DynamicRepository`
 - **CQRS-ready** — Integrates with `@nestjs/cqrs`
 - **Audit trail** — `createdBy`, `updatedBy`, `deletedBy`, soft delete
-- **MongoDB & SQL** — Works with TypeORM drivers (MongoDB, PostgreSQL, MySQL, etc.)
+- **Multi-driver** — Works with TypeORM drivers (PostgreSQL, MySQL, SQLite, MongoDB, etc.); domain models always use `id`
 
 ---
 
@@ -83,6 +83,7 @@ setModuleOptions({
 @Module({
   imports: [
     NestjsFutkaeyModule.forRoot({
+      databaseType: 'postgres', // picks default system-user `id` format; or set systemUserId explicitly
       tenancy: { mode: 'multi-tenant', tenant: { fieldName: 'companyId', headerName: 'x-company-id' } },
       audit: { userIdHeader: 'x-user-id' },
     }),
@@ -91,6 +92,8 @@ setModuleOptions({
 })
 export class AppModule {}
 ```
+
+Domain models and repositories always use `id`. TypeORM entities map that to the driver’s primary key column (`id` for SQL, `_id` for document drivers). Set `databaseType` (or `systemUserId`) so audit/tenant fallbacks match your `id` format.
 
 ### 2. Tenant field names: `tenantId`, `companyId`, `customerId`
 
@@ -109,8 +112,8 @@ Your entities declare the matching column:
 @Entity('orders')
 @TenantAware()
 export class OrderEntity extends AuditableEntity {
-  @ObjectIdColumn() id: ObjectId;
-  @Column() companyId: ObjectId;  // matches fieldName in config
+  @PrimaryGeneratedColumn('uuid') id: string;
+  @Column() companyId: string;  // matches fieldName in config
   @Column() total: number;
 }
 ```
@@ -229,10 +232,10 @@ tenancy: {
 @Entity('invoices')
 @TenantAware()
 export class InvoiceEntity extends AuditableEntity {
-  @ObjectIdColumn() id: ObjectId;
-  @Column() tenantId: ObjectId;
-  @Column() companyId: ObjectId;
-  @Column() customerId?: ObjectId;
+  @PrimaryGeneratedColumn('uuid') id: string;
+  @Column() tenantId: string;
+  @Column() companyId: string;
+  @Column() customerId?: string;
   @Column() amount: number;
 }
 ```
@@ -295,8 +298,8 @@ For per-aggregate collections (e.g. one **cards** collection and a dynamic **tra
 @Entity('cards')
 @TenantAware()
 export class CardEntity extends AuditableEntity {
-  @ObjectIdColumn() id: ObjectId;
-  @Column() companyId: ObjectId;
+  @PrimaryGeneratedColumn('uuid') id: string;
+  @Column() companyId: string;
   @Column() lastFour: string;
   // ...
 }
@@ -306,7 +309,7 @@ export class CardEntity extends AuditableEntity {
   idField: 'creditcardId',
 })
 export class TransactionEntity extends AuditableEntity {
-  @Column() creditcardId: ObjectId;
+  @Column() creditcardId: string;
   @Column() amount: number;
   @Column() merchant: string;
   // ...
@@ -343,6 +346,9 @@ See the [`samples/`](./samples/) directory for full NestJS examples:
 | `TenantAware`         | Marks entity as tenant-aware            |
 | `setModuleOptions`    | Set tenancy/audit config imperatively   |
 | `getContextValue`     | Read value from CLS (e.g. tenant, user) |
+| `DatabaseId`          | Type for entity primary key / `id` column values |
+| `newId`               | Create a value for the driver’s `id` column     |
+| `getDefaultSystemUserId` | Default system-user id for a `databaseType`  |
 
 ---
 

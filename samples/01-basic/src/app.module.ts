@@ -8,6 +8,7 @@ import { LookupModule } from './lookup/lookup.module';
 @Module({
   imports: [
     NestjsFutkaeyModule.forRoot({
+      databaseType: 'sqlite',
       tenancy: { mode: 'regular' },
       audit: {
         userIdHeader: 'x-user-id',

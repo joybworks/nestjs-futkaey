@@ -6,6 +6,7 @@ import { CardModule } from './card/card.module';
 @Module({
   imports: [
     NestjsFutkaeyModule.forRoot({
+      databaseType: 'mongodb',
       tenancy: {
         mode: 'multi-tenant',
         tenant: {

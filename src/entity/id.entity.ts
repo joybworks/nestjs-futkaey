@@ -2,13 +2,13 @@
 
 /**
  * Abstract base entity providing primary key and JSON serialization.
- * Users must declare their own primary key with the appropriate TypeORM decorator:
+ * Declare the `id` property with the TypeORM decorator for your driver:
  *
- * For MongoDB:
- *   @ObjectIdColumn({ name: '_id' }) id: ObjectId;
- *
- * For SQL:
+ * Relational drivers:
  *   @PrimaryGeneratedColumn('uuid') id: string;
+ *
+ * Document drivers (entity property stays `id`; column may be `_id`):
+ *   @ObjectIdColumn({ name: '_id' }) id: DatabaseId;
  */
 export abstract class IdEntity {
   abstract id: any;
@@ -20,7 +20,7 @@ export abstract class IdEntity {
       if (Object.prototype.hasOwnProperty.call(this, key)) {
         let value = (this as any)[key];
 
-        // Convert ObjectId-like values to string (has toString and toHexString)
+        // Convert document-driver id values to string (has toString and toHexString)
         if (value && typeof value === 'object' && typeof value.toHexString === 'function') {
           value = value.toString();
         }

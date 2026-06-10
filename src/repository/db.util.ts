@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
- * Creates a new database ID. For MongoDB, creates an ObjectId.
- * Falls back to returning the input string if MongoDB is not available.
+ * Creates a value suitable for the entity `id` column.
+ * Document drivers return a native id type; relational drivers return a UUID string.
  */
 export const newId = (inputId?: string | any): any => {
   try {
@@ -14,7 +14,8 @@ export const newId = (inputId?: string | any): any => {
 };
 
 /**
- * Check if a value is a valid database ID (ObjectId-like)
+ * Check if a value is a valid primary key for the active document driver.
+ * Relational id strings (e.g. UUID) are not validated here.
  */
 export const isDatabaseId = (inputId: any): boolean => {
   if (!inputId) return false;
@@ -38,8 +39,21 @@ export const toDate = (v: unknown): Date | undefined => {
   return v ? new Date(v as string) : undefined;
 };
 
+/** Zero-value sentinel for document-driver `id` columns (24-char hex). */
+export const SYSTEM_USER_ID_MONGO = '000000000000000000000000';
+/** Zero-value sentinel for relational-driver `id` columns (nil UUID). */
+export const SYSTEM_USER_ID_SQL = '00000000-0000-0000-0000-000000000000';
+
 /**
- * Determine if the repository is using a MongoDB driver
+ * Default system user ID for the given database driver `id` column format.
+ * Document drivers use a 24-char hex id; relational drivers use the nil UUID.
+ */
+export const getDefaultSystemUserId = (databaseType?: string): string =>
+  databaseType === 'mongodb' ? SYSTEM_USER_ID_MONGO : SYSTEM_USER_ID_SQL;
+
+/**
+ * Returns true when the repository uses a document driver whose primary key
+ * column name differs from the entity `id` property (e.g. maps `id` → `_id`).
  */
 export const isMongoDriver = (repository: any): boolean => {
   try {
@@ -61,9 +75,7 @@ export const escapeLikeToRegex = (pattern: string): string => {
     .replace(/_/g, '.');                       // _ -> .
 };
 
-/**
- * Alias for newId
- */
+/** Alias for {@link newId}. */
 export const newDatabaseId = newId;
 
 /**
@@ -72,8 +84,11 @@ export const newDatabaseId = newId;
 export const toDateForDatabase = toDate;
 
 /**
- * DatabaseId type - alias for MongoDB ObjectId.
- * Use `import type { DatabaseId } from '@joyb-works/nestjs-futkaey'`
+ * Primary key value for an entity `id` column.
+ * Shape depends on the TypeORM driver (UUID string, number, document id, etc.).
+ *
+ * @example
+ * import type { DatabaseId } from '@joyb-works/nestjs-futkaey';
  */
 export type DatabaseId = any;
 

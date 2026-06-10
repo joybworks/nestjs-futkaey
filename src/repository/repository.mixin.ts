@@ -52,10 +52,11 @@ export const RepositoryMixin = <AppEntity extends IdEntity, AppModel extends Bas
     }
 
     #contextualize<T, V>(docOrDocs: T | T[], access: 'read' | 'write' = 'read'): V {
+      const forMongo = this.#isMongoDriver();
       if (Array.isArray(docOrDocs)) {
-        return contextualizeArray(tEntity, docOrDocs, access) as unknown as V;
+        return contextualizeArray(tEntity, docOrDocs, access, forMongo) as unknown as V;
       }
-      return contextualize(tEntity, docOrDocs, access) as unknown as V;
+      return contextualize(tEntity, docOrDocs, access, forMongo) as unknown as V;
     }
 
     #toDomain(entity: AppEntity): AppModel {

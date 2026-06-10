@@ -32,13 +32,16 @@ function getTenantId(clsKey: string): any | undefined {
 
 /**
  * Contextualize a single document/query with tenant fields.
- * In regular mode, only sanitizes IDs.
+ * In regular mode, only maps the `id` property when the driver requires it.
  * In tenant modes, injects configured tenant field values.
+ *
+ * @param forMongo When true, map `id` to the driver's primary key column (e.g. `_id`).
  */
 export function contextualize<T>(
   entityClass: any,
   doc: T,
-  access: 'read' | 'write' = 'read'
+  access: 'read' | 'write' = 'read',
+  forMongo = false,
 ): T {
   const docTyped: any = doc as any;
 
@@ -57,7 +60,7 @@ export function contextualize<T>(
   }
 
   if (isRegularMode() || !isTenantAware(entityClass)) {
-    return sanitizeId(docTyped);
+    return sanitizeId(docTyped, forMongo);
   }
 
   const levels = getHierarchyLevels();
@@ -94,7 +97,7 @@ export function contextualize<T>(
     }
   }
 
-  return sanitizeId(docTyped);
+  return sanitizeId(docTyped, forMongo);
 }
 
 /**
@@ -103,7 +106,8 @@ export function contextualize<T>(
 export function contextualizeArray<T>(
   entityClass: any,
   docs: T[],
-  access: 'read' | 'write' = 'read'
+  access: 'read' | 'write' = 'read',
+  forMongo = false,
 ): T[] {
-  return docs.map(doc => contextualize(entityClass, doc, access));
+  return docs.map(doc => contextualize(entityClass, doc, access, forMongo));
 }

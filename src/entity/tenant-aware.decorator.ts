@@ -14,6 +14,12 @@ import { MetadataKeys } from '../config/nestjs-futkaey.constants';
  * @TenantAware()
  * @Entity('cards')
  * export class CardEntity extends AuditableEntity {
+ *   ## Relational driver:
+ *   @PrimaryGeneratedColumn('uuid') id: string;
+ *   @Column() companyId: string;  // matches config tenant.fieldName
+ * 
+ * 
+ *   ## MongoDB driver:
  *   @ObjectIdColumn({ name: '_id' }) id: ObjectId;
  *   @Column() companyId: ObjectId;  // matches config tenant.fieldName
  * }

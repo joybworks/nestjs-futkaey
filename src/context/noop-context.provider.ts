@@ -1,4 +1,4 @@
-import { SYSTEM_USER_ID_DEFAULT } from '../config/nestjs-futkaey.constants';
+import { getSystemUserId } from '../config/nestjs-futkaey.accessor';
 import { HierarchyLevel } from '../config/nestjs-futkaey.interfaces';
 import { IContextProvider } from './context.interface';
 
@@ -24,6 +24,6 @@ export class NoopContextProvider implements IContextProvider {
   }
 
   getSystemUserId(): string {
-    return SYSTEM_USER_ID_DEFAULT;
+    return getSystemUserId();
   }
 }
