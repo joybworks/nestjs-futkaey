@@ -10,12 +10,20 @@ export interface DynamicEntityMetadata {
   entityClass: Type<any>;
   idField: string;
   textSearchFields?: string[];
+  /**
+   * Marks this dynamic entity as read-only: the generated repository only
+   * exposes find/count/query-style methods (no save/insert/update/upsert/
+   * delete/softDelete/restore/increment/decrement/remove/softRemove/
+   * recover/clear), and `init`/`destroy` (collection lifecycle) are
+   * rejected rather than attempted.
+   */
+  readOnly?: boolean;
 }
 
 export function DynamicEntity(
   options:
-    | { baseName: string; idField: string; textSearchFields?: string[] }
-    | { collectionNameGenerator: (id: string) => string; textSearchFields?: string[]; idField: string }
+    | { baseName: string; idField: string; textSearchFields?: string[]; readOnly?: boolean }
+    | { collectionNameGenerator: (id: string) => string; textSearchFields?: string[]; idField: string; readOnly?: boolean }
 ): ClassDecorator {
   return (target: any) => {
     let idField: string;
@@ -45,6 +53,7 @@ export function DynamicEntity(
       entityClass: target,
       idField,
       textSearchFields: options.textSearchFields,
+      readOnly: options.readOnly ?? false,
     });
 
     const entityDecorator = Entity({ name: baseCollectionName });

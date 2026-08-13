@@ -32,11 +32,17 @@ export const DynamicRepositoryMixin = <
 
     constructor(@InjectDataSource() dataSource: DataSource) {
       this.#dataSource = dataSource;
-      const appRepoMethods = new Set([
-        'save', 'find', 'findOne', 'findBy', 'findOneBy', 'findAndCount',
-        'count', 'countBy', 'update', 'delete', 'softDelete', 'restore',
-        'createQueryBuilder', 'query', 'clear'
+      const readOnlyMethods = new Set([
+        'find', 'findOne', 'findBy', 'findOneBy', 'findAndCount', 'findAndCountBy',
+        'count', 'countBy', 'exists', 'existsBy', 'createQueryBuilder', 'query'
       ]);
+      const writeOnlyMethods = new Set([
+        'save', 'insert', 'update', 'upsert', 'delete', 'softDelete', 'restore',
+        'increment', 'decrement', 'remove', 'softRemove', 'recover', 'clear'
+      ]);
+      const appRepoMethods = config.readOnly
+        ? readOnlyMethods
+        : new Set([...readOnlyMethods, ...writeOnlyMethods]);
 
       return new Proxy(this, {
         get: (target, prop: string | symbol) => {
@@ -51,12 +57,26 @@ export const DynamicRepositoryMixin = <
           }
 
           if (typeof prop === 'string' && (prop === 'init' || prop === 'destroy')) {
+            if (config.readOnly) {
+              return async () => Promise.reject(new Error(
+                `${config.entityClass.name} is a read-only dynamic entity (physical tables are ` +
+                `owned/populated by an external pipeline); '${prop}' is not supported.`
+              ));
+            }
             return async (id?: any) => {
               if (id === undefined || id === null) {
                 return Promise.reject(new Error('ID is required for init/destroy operations'));
               }
               if (prop === 'init') return target.#initCollection(id);
               else return target.#destroyCollection(id);
+            };
+          }
+
+          if (config.readOnly && typeof prop === 'string' && writeOnlyMethods.has(prop)) {
+            return () => {
+              throw new Error(
+                `${config.entityClass.name} is a read-only dynamic entity; '${prop}' is not supported.`
+              );
             };
           }
 
@@ -212,14 +232,22 @@ export const DynamicRepositoryMixin = <
       const baseRepo = this.#dataSource.getRepository(entityClass);
       const originalMetadata = this.#dataSource.getMetadata(entityClass);
 
-      if (this.#dataSource.driver.options.type !== 'mongodb') {
-        const RepositoryClass = RepositoryMixin(entityClass, modelClass);
-        return new RepositoryClass(baseRepo);
-      }
-
       const metadataProxy = new Proxy(originalMetadata, {
         get: (metaTarget, metaProp) => {
           if (metaProp === 'tableName' || metaProp === 'tableNameWithoutPrefix' || metaProp === 'givenTableName') {
+            return collectionName;
+          }
+          // SQL query builders (SelectQueryBuilder.createFromAlias et al.) read
+          // `metadata.tablePath` -- NOT `tableName` -- to populate the alias
+          // used for FROM/JOIN generation. Mongo never needed this override
+          // (its driver reads `tableName` directly), but omitting it means the
+          // FROM clause silently keeps hitting the base/placeholder table for
+          // every relational driver. `tablePath` is normally
+          // `driver.buildTableName(tableName, schema, database)`; since our
+          // override is schema/database-agnostic here, we return the plain
+          // collection name -- fine for the common case of same-schema sibling
+          // tables.
+          if (metaProp === 'tablePath') {
             return collectionName;
           }
           return Reflect.get(metaTarget, metaProp as string | symbol);
@@ -242,7 +270,11 @@ export const DynamicRepositoryMixin = <
 
       const managerProxy = new Proxy(baseRepo.manager, {
         get: (managerTarget, managerProp) => {
-          if (managerProp === 'connection') return connectionProxy;
+          // Modern TypeORM (0.3.x) reads `.dataSource` internally (e.g.
+          // `Repository.metadata` getter, `EntityManager.createQueryBuilder`);
+          // `.connection` is kept only as a deprecated alias. Both must be
+          // intercepted or the override silently never engages for SQL drivers.
+          if (managerProp === 'connection' || managerProp === 'dataSource') return connectionProxy;
           return Reflect.get(managerTarget, managerProp as string | symbol);
         }
       });
