@@ -19,12 +19,12 @@ import { PickKeysByType } from 'typeorm/common/PickKeysByType';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { UpsertOptions } from 'typeorm/repository/UpsertOptions';
 import { BasicAggregateRoot } from '../aggregate/aggregate-root';
-import { IdEntity } from '../entity/id.entity';
 import { putBackIdForUpdate, removeIdForUpdate } from '../entity/entity.util';
+import { IdEntity } from '../entity/id.entity';
 import { AppRepository } from './app.repository';
-import { MarshallerMixin } from './marshaller.mixin';
 import { contextualize, contextualizeArray } from './contextualize.util';
-import { escapeLikeToRegex, isMongoDriver as checkIsMongoDriver } from './db.util';
+import { isMongoDriver as checkIsMongoDriver, escapeLikeToRegex } from './db.util';
+import { MarshallerMixin } from './marshaller.mixin';
 
 type FindOperatorType = 'not' | 'lessThan' | 'lessThanOrEqual' | 'moreThan' | 'moreThanOrEqual' |
   'equal' | 'between' | 'in' | 'any' | 'isNull' | 'like' | 'ilike' | 'regex' |
@@ -179,7 +179,10 @@ export const RepositoryMixin = <AppEntity extends IdEntity, AppModel extends Bas
     readonly manager = this.repository.manager;
     readonly queryRunner = this.repository.queryRunner;
     get metadata() { return this.repository.metadata; }
-    createQueryBuilder = this.repository.createQueryBuilder;
+    // createQueryBuilder = this.repository.createQueryBuilder;
+    createQueryBuilder = (..._args: Parameters<Repository<AppEntity>['createQueryBuilder']>) => {
+      throw new Error(`createQueryBuilder is not supported in ${this.entityName} repository`);
+    };
     hasId = this.repository.hasId;
     getId = this.repository.getId;
 
