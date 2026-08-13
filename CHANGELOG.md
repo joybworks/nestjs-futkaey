@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/joybworks/nestjs-futkaey/compare/v0.0.5...v0.0.6) (2026-08-13)
+
+
+### Bug Fixes
+
+* create query builder should not be used need to get model ([e579b71](https://github.com/joybworks/nestjs-futkaey/commit/e579b719ce7ea606ee08bbf7c7707a07cecacf3b))
+* dynamic entity for all data drivers ([aa1133a](https://github.com/joybworks/nestjs-futkaey/commit/aa1133ab71fc9c5ade5258d46dfb71e426153421))
+
 ### [0.0.5](https://github.com/joybworks/nestjs-futkaey/compare/v0.0.4...v0.0.5) (2026-06-10)
 
 
