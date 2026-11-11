@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.7](https://github.com/joybworks/nestjs-futkaey/compare/v0.0.6...v0.0.7) (2026-11-11)
+
+
+### Bug Fixes
+
+* implement soft delete functionality for skipped values from models ([069243a](https://github.com/joybworks/nestjs-futkaey/commit/069243ad2bf068b9a21767e71da46a5c53a0770b))
+
 ### [0.0.6](https://github.com/joybworks/nestjs-futkaey/compare/v0.0.5...v0.0.6) (2026-08-13)
 
 
