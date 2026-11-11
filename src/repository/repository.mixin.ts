@@ -63,6 +63,19 @@ export const RepositoryMixin = <AppEntity extends IdEntity, AppModel extends Bas
       return this.#marshallerService.toDomain(entity);
     }
 
+    /**
+     * What a SQL soft delete writes. TypeORM's own `softDelete()` only stamps `deletedAt` and cannot set another
+     * column, so the model's `deletedBy` was dropped. The model already carries both stamps (set when it enters
+     * DomainAccess.Delete), so they are read straight off it - no marshalling. A model that never entered Delete
+     * falls back to the database clock and no actor.
+     */
+    #softDeleteValues(model: Partial<AppModel>): QueryDeepPartialEntity<AppEntity> {
+      return {
+        deletedAt: model.deletedAt ?? (() => 'CURRENT_TIMESTAMP'),
+        ...model.deletedBy ? { deletedBy: model.deletedBy } : {},
+      } as unknown as QueryDeepPartialEntity<AppEntity>;
+    }
+
     #fromDomain(model: AppModel): AppEntity {
       return this.#marshallerService.fromDomain(model);
     }
@@ -285,7 +298,7 @@ export const RepositoryMixin = <AppEntity extends IdEntity, AppModel extends Bas
         if (isMongo) {
           return this.repository.update(criteria, removeIdForUpdate(this.#contextualize(this.#fromDomain(partialEntity as AppModel), 'write')));
         } else {
-          return this.repository.softDelete(criteria);
+          return this.repository.update(criteria as FindOptionsWhere<AppEntity>, this.#softDeleteValues(partialEntity));
         }
       }
       const effective = isMongo
@@ -294,7 +307,7 @@ export const RepositoryMixin = <AppEntity extends IdEntity, AppModel extends Bas
       if (isMongo) {
         return this.repository.update(putBackIdForUpdate(effective), removeIdForUpdate(this.#contextualize(this.#fromDomain(partialEntity as AppModel), 'write')));
       } else {
-        return this.repository.softDelete(effective);
+        return this.repository.update(effective, this.#softDeleteValues(partialEntity));
       }
     }
 
@@ -305,7 +318,7 @@ export const RepositoryMixin = <AppEntity extends IdEntity, AppModel extends Bas
         if (isMongo) {
           return this.repository.update(criteria, removeIdForUpdate(this.#contextualize({ ...this.#fromDomain(partialEntity as AppModel), ...checkpoint }, 'write')));
         } else {
-          return this.repository.restore(criteria);
+          return this.repository.update(criteria as FindOptionsWhere<AppEntity>, checkpoint as unknown as QueryDeepPartialEntity<AppEntity>);
         }
       }
       const effective = isMongo
@@ -314,7 +327,7 @@ export const RepositoryMixin = <AppEntity extends IdEntity, AppModel extends Bas
       if (isMongo) {
         return this.repository.update(putBackIdForUpdate(effective), removeIdForUpdate(this.#contextualize({ ...this.#fromDomain(partialEntity as AppModel), ...checkpoint }, 'write')));
       } else {
-        return this.repository.restore(effective);
+        return this.repository.update(effective, checkpoint as unknown as QueryDeepPartialEntity<AppEntity>);
       }
     }
 

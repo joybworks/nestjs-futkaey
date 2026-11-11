@@ -102,4 +102,5 @@
     "**/.cursor": true
   },
   "material-icon-theme.activeIconPack": "angular_ngrx",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
 }
